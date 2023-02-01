@@ -22,7 +22,7 @@ public class FilmController {
     }
 
     @GetMapping("/films")
-    public List<Film> findAllUsers() {
+    public List<Film> findAllFilms() {
         log.info("Текущее количество фильмов: {}", films.size());
         return List.copyOf(films.values());
     }

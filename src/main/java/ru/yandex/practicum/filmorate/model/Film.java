@@ -7,6 +7,7 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
+@Builder
 public class Film {
     private int id;
     @NotBlank(message = ExceptionMessage.EMPTY_NAME)
