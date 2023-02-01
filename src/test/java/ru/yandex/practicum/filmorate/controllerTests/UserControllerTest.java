@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserConrollerTest extends UserController {
+public class UserControllerTest extends UserController {
 
     UserController userController = new UserController();
 
