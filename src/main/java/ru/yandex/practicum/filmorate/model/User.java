@@ -7,7 +7,11 @@ import javax.validation.constraints.*;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@ToString(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User {
     private int id;

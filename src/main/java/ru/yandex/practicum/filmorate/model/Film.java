@@ -6,7 +6,11 @@ import javax.validation.constraints.*;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@ToString(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Film {
     private int id;

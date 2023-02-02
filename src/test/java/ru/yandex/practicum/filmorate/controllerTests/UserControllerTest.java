@@ -33,6 +33,7 @@ public class UserControllerTest extends UserController {
     @Test
     void shouldCreateUserWithEmptyName() {
         User user = User.builder()
+                .name("   ")
                 .email("Fedor@gmail.com")
                 .login("federic")
                 .birthday(LocalDate.of(1997, 6, 23))
