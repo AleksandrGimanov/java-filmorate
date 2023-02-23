@@ -6,13 +6,14 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 
 import java.time.LocalDate;
 import java.util.Collection;
 
-public class FilmControllerTest extends FilmController {
-    FilmController filmController = new FilmController();
+public class FilmControllerTest  {
+    InMemoryFilmStorage filmController = new InMemoryFilmStorage();
 
     @Test
     void shouldGetAllFilms() {
