@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controllerTests;
 
+import ru.yandex.practicum.filmorate.Exception.ErrorException;
 import ru.yandex.practicum.filmorate.Exception.ValidationException;
 import ru.yandex.practicum.filmorate.contoller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;

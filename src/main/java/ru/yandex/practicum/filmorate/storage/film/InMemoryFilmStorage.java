@@ -43,7 +43,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.info("описание фильма изменено: {} ", film);
         } else {
             log.debug("фильм не найден");
-            throw new ErrorException("фильм не найден");
+            throw new ValidationException("фильм не найден");
         }
         return film;
     }
