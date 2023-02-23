@@ -86,7 +86,7 @@ public class FilmControllerTest  {
                 .build();
         filmController.createFilm(film1);
         film2.setId(777);
-        ValidationException ex = assertThrows(ValidationException.class, () -> filmController.changeFilm(film2));
+        ErrorException ex = assertThrows(ErrorException.class, () -> filmController.changeFilm(film2));
         assertEquals("фильм не найден", ex.getMessage());
     }
 }
