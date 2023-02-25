@@ -37,14 +37,14 @@ public class FilmService {
     }
 
     public Film addLike(int filmId, int userId){
-        checkFilms(filmId);
+        getFilmById(filmId);
         filmStorage.getFilmById(filmId).getFilmsLikesUsers().add(userId);
         log.info("Пользователь с id: {} поставил лайк фильму с id: {}", userId, filmId);
         return filmStorage.getFilmById(filmId);
     }
 
     public Film deleteLike(int filmId, int userId){
-        checkFilms(filmId);
+        getFilmById(filmId);
         if (!filmStorage.getFilmById(filmId).getFilmsLikesUsers().contains(userId))
             throw new ErrorException("Пользователь не ставил лайк фильму");
         filmStorage.getFilmById(filmId).getFilmsLikesUsers().remove(userId);
@@ -58,11 +58,5 @@ public class FilmService {
                 .limit(count)
                 .collect(Collectors.toList());
     }
-
-    private void checkFilms(int filmId){
-        if (!filmStorage.getFilms().containsKey(filmId))
-            throw new ErrorException("Фильм с ID: " + filmId + " не найден");
-    }
-
 
 }

@@ -17,5 +17,4 @@ public interface UserStorage {
 
     User getUserById(int userId);
 
-    Map<Integer, User> getUsers();
 }

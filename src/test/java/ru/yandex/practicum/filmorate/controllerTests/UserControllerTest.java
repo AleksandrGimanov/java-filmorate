@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controllerTests;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.contoller.UserController;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 

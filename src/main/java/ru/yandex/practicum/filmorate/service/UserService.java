@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.Exception.ErrorException;
 import ru.yandex.practicum.filmorate.Exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -40,7 +39,8 @@ public class UserService {
     public User addFriend(int userId, int friendId) {
         if (userId == friendId)
             throw new ValidationException("Пользователь не может быть другом сам себе");
-        checkUsers(List.of(userId,friendId));
+        getUserById(userId);
+        getUserById(friendId);
         userStorage.getUserById(userId).getUsersFriends().add(friendId);
         userStorage.getUserById(friendId).getUsersFriends().add(userId);
         log.info("Пользователи с id: {} и {} стали друзьями", userId, friendId);
@@ -50,7 +50,8 @@ public class UserService {
     public User deleteFriend(int userId, int friendId) {
         if (userId == friendId)
             throw new ValidationException("Пользователь не может быть другом сам себе");
-        checkUsers(List.of(userId,friendId));
+        getUserById(userId);
+        getUserById(friendId);
         if (!userStorage.getUserById(userId).getUsersFriends().contains(friendId) && !userStorage.getUserById(friendId).getUsersFriends().contains(userId))
             throw new ValidationException("Пользователи не друзья");
         userStorage.getUserById(userId).getUsersFriends().remove(friendId);
@@ -60,14 +61,15 @@ public class UserService {
     }
 
     public List<User> getUserFriends(int userId) {
-        checkUsers(List.of(userId));
+        getUserById(userId);
         return userStorage.getUserById(userId).getUsersFriends().stream()
                 .map(userStorage::getUserById)
                 .collect(Collectors.toList());
     }
 
     public List<User> getCommonFriends(int userId, int otherUserId) {
-        checkUsers(List.of(userId,otherUserId));
+        getUserById(userId);
+        getUserById(otherUserId);
         if (userId == otherUserId)
             throw new ValidationException("Пользователь не может быть другом сам себе");
         return userStorage.getUserById(userId).getUsersFriends().stream()
@@ -75,13 +77,4 @@ public class UserService {
                 .map(userStorage::getUserById)
                 .collect(Collectors.toList());
     }
-
-    private void checkUsers(List<Integer> userIdList){
-        for (Integer userId : userIdList){
-            if (!userStorage.getUsers().containsKey(userId))
-                throw new ErrorException("Пользователь с ID: " + userId + " не найден");
-        }
-    }
-
-
 }

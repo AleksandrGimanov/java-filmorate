@@ -79,10 +79,4 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new ValidationException("дата релиза — не раньше 28 декабря 1895 года");
         }
     }
-    @Override
-    public Map<Integer, Film> getFilms(){
-        return films;
-    }
-
-
 }
