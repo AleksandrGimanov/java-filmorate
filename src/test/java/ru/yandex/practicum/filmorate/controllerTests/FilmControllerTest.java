@@ -1,18 +1,22 @@
 package ru.yandex.practicum.filmorate.controllerTests;
 
+import ru.yandex.practicum.filmorate.Exception.ErrorException;
 import ru.yandex.practicum.filmorate.Exception.ValidationException;
-import ru.yandex.practicum.filmorate.contoller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+
 
 
 import java.time.LocalDate;
 import java.util.Collection;
 
-public class FilmControllerTest extends FilmController {
-    FilmController filmController = new FilmController();
+public class FilmControllerTest  {
+    InMemoryFilmStorage filmController = new InMemoryFilmStorage();
+    FilmService filmService = new FilmService(filmController);
 
     @Test
     void shouldGetAllFilms() {
@@ -28,9 +32,9 @@ public class FilmControllerTest extends FilmController {
                 .releaseDate(LocalDate.now())
                 .duration(500)
                 .build();
-        filmController.createFilm(film1);
-        filmController.createFilm(film2);
-        assertEquals(2,filmController.findAllFilms().size());
+        filmService.createFilm(film1);
+        filmService.createFilm(film2);
+        assertEquals(2,filmService.findAllFilms().size());
     }
 
     @Test
@@ -84,7 +88,10 @@ public class FilmControllerTest extends FilmController {
                 .build();
         filmController.createFilm(film1);
         film2.setId(777);
-        ValidationException ex = assertThrows(ValidationException.class, () -> filmController.changeFilm(film2));
+        ErrorException ex = assertThrows(ErrorException.class, () -> filmController.changeFilm(film2));
         assertEquals("фильм не найден", ex.getMessage());
     }
+
 }
+
+

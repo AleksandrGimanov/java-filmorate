@@ -1,15 +1,15 @@
 package ru.yandex.practicum.filmorate.controllerTests;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.contoller.UserController;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserControllerTest extends UserController {
+public class UserControllerTest {
 
-    UserController userController = new UserController();
+    InMemoryUserStorage userController = new InMemoryUserStorage();
 
     @Test
     void shouldGetAllUsers() {
