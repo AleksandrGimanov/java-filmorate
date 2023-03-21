@@ -3,12 +3,10 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.Exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,6 +19,7 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        validate(user);
         return userStorage.createUser(user);
     }
 
@@ -29,52 +28,33 @@ public class UserService {
     }
 
     public User changeUser(User user) {
+        validate(user);
         return userStorage.changeUser(user);
     }
 
-    public User deleteUser(User user) {
-        return userStorage.deleteUser(user);
+    public User deleteUser(int id) {
+        return userStorage.deleteUser(id);
     }
 
-    public User addFriend(int userId, int friendId) {
-        if (userId == friendId)
-            throw new ValidationException("Пользователь не может быть другом сам себе");
-        getUserById(userId);
-        getUserById(friendId);
-        userStorage.getUserById(userId).getUsersFriends().add(friendId);
-        userStorage.getUserById(friendId).getUsersFriends().add(userId);
-        log.info("Пользователи с id: {} и {} стали друзьями", userId, friendId);
-        return userStorage.getUserById(userId);
+    public void addFriend(int userId, int friendId) {
+         userStorage.addFriend(userId,friendId);
     }
 
-    public User deleteFriend(int userId, int friendId) {
-        if (userId == friendId)
-            throw new ValidationException("Пользователь не может быть другом сам себе");
-        getUserById(userId);
-        getUserById(friendId);
-        if (!userStorage.getUserById(userId).getUsersFriends().contains(friendId) && !userStorage.getUserById(friendId).getUsersFriends().contains(userId))
-            throw new ValidationException("Пользователи не друзья");
-        userStorage.getUserById(userId).getUsersFriends().remove(friendId);
-        userStorage.getUserById(friendId).getUsersFriends().remove(userId);
-        log.info("Пользователи с id: {} и {} больше не друзья", userId, friendId);
-        return userStorage.getUserById(userId);
+    public void deleteFriend(int userId, int friendId) {
+        userStorage.deleteFriend(userId,friendId);
     }
 
     public List<User> getUserFriends(int userId) {
-        getUserById(userId);
-        return userStorage.getUserById(userId).getUsersFriends().stream()
-                .map(userStorage::getUserById)
-                .collect(Collectors.toList());
+        return userStorage.getUserFriends(userId);
     }
 
     public List<User> getCommonFriends(int userId, int otherUserId) {
-        getUserById(userId);
-        getUserById(otherUserId);
-        if (userId == otherUserId)
-            throw new ValidationException("Пользователь не может быть другом сам себе");
-        return userStorage.getUserById(userId).getUsersFriends().stream()
-                .filter(friendId -> userStorage.getUserById(otherUserId).getUsersFriends().contains(friendId))
-                .map(userStorage::getUserById)
-                .collect(Collectors.toList());
+        return userStorage.getCommonFriends(userId,otherUserId);
     }
+
+    private void validate(User user) {
+        if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
+    }
+
+
 }

@@ -3,10 +3,8 @@ import ru.yandex.practicum.filmorate.message.ExceptionMessage;
 
 import lombok.*;
 import javax.validation.constraints.*;
-
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,5 +21,7 @@ public class Film {
     private LocalDate releaseDate;
     @PositiveOrZero(message = ExceptionMessage.POSITIVE_DURATION)
     private long duration;
-    private Set<Integer> filmsLikesUsers = new HashSet<>();
+    private Mpa mpa;
+    private List<Genre> genres;
+ //   private Set<Integer> filmsLikesUsers = new HashSet<>();
 }

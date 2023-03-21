@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 
+import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -15,7 +16,7 @@ public class FilmController {
     private final FilmService filmService;
 
     @GetMapping("/films")
-    public List<Film> findAllFilms() {
+    public Collection<Film> findAllFilms() {
         return filmService.findAllFilms();
     }
 
@@ -35,13 +36,13 @@ public class FilmController {
     }
 
     @PutMapping("/films/{id}/like/{userId}")
-    public Film addLike(@PathVariable int id, @PathVariable int userId) {
-        return filmService.addLike(id, userId);
+    public void addLike(@PathVariable int id, @PathVariable int userId) {
+         filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
-    public Film deleteLike(@PathVariable int id, @PathVariable int userId) {
-        return filmService.deleteLike(id, userId);
+    public void deleteLike(@PathVariable int id, @PathVariable int userId) {
+         filmService.deleteLike(id, userId);
     }
 
     @GetMapping("/films/popular")
