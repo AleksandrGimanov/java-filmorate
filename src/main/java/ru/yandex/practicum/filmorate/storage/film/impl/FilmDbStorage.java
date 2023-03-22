@@ -43,6 +43,15 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
+
+        if (film.getGenres() != null) {
+            for (Genre gch : film.getGenres()) {
+                if (gch.getId() == null || gch.getName() == null) {
+                    throw new ErrorException("Нет данных");
+                }
+            }
+        }
+
         final String sqlQuery = "INSERT INTO films (name, description, release_date, duration, mpa_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
         KeyHolder generatedId = new GeneratedKeyHolder();
@@ -63,9 +72,12 @@ public class FilmDbStorage implements FilmStorage {
         if (film.getGenres() != null) {
             final String genresSqlQuery = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
             for (Genre g : film.getGenres()) {
-                jdbcTemplate.update(genresSqlQuery, film.getId(), g.getId());
+                if (g.getId() != null || g.getName() != null) {
+                    jdbcTemplate.update(genresSqlQuery, film.getId(), g.getId());
+                }
             }
         }
+
         return film;
     }
 
