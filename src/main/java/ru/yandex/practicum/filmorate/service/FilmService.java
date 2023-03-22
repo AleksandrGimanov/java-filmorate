@@ -3,12 +3,13 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.Exception.ErrorException;
+import ru.yandex.practicum.filmorate.Exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -16,15 +17,17 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final FilmStorage filmStorage;
 
-    public Film createFilm(Film film){
+    public Film createFilm(Film film) {
+        filmValidation(film);
         return filmStorage.createFilm(film);
     }
 
-    public List<Film> findAllFilms(){
+    public Collection<Film> findAllFilms() {
         return filmStorage.findAllFilms();
     }
 
-    public Film changeFilm(Film film){
+    public Film changeFilm(Film film) {
+        filmValidation(film);
         return filmStorage.changeFilm(film);
     }
 
@@ -32,31 +35,27 @@ public class FilmService {
         return filmStorage.getFilmById(filmId);
     }
 
-    public Film deleteFilm(Film film) {
-        return filmStorage.deleteFilm(film);
+    public Film deleteFilm(int id) {
+        return filmStorage.deleteFilm(id);
     }
 
-    public Film addLike(int filmId, int userId){
-        getFilmById(filmId);
-        filmStorage.getFilmById(filmId).getFilmsLikesUsers().add(userId);
-        log.info("Пользователь с id: {} поставил лайк фильму с id: {}", userId, filmId);
-        return filmStorage.getFilmById(filmId);
+    public void addLike(int filmId, int userId) {
+        filmStorage.addLike(filmId, userId);
     }
 
-    public Film deleteLike(int filmId, int userId){
-        getFilmById(filmId);
-        if (!filmStorage.getFilmById(filmId).getFilmsLikesUsers().contains(userId))
-            throw new ErrorException("Пользователь не ставил лайк фильму");
-        filmStorage.getFilmById(filmId).getFilmsLikesUsers().remove(userId);
-        log.info("Пользователь с id: {} удалил лайк у фильма с id: {}", userId, filmId);
-        return filmStorage.getFilmById(filmId);
+    public void deleteLike(int filmId, int userId) {
+         filmStorage.deleteLike(filmId, userId);
     }
 
-    public List<Film> getPopularFilms(int count){
-        return filmStorage.findAllFilms().stream()
-                .sorted((o1, o2) -> Integer.compare(o2.getFilmsLikesUsers().size(), o1.getFilmsLikesUsers().size()))
-                .limit(count)
-                .collect(Collectors.toList());
+    public List<Film> getPopularFilms(int count) {
+        return filmStorage.getPopularFilms(count);
     }
+
+    public void filmValidation(Film film) {
+        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            throw new ValidationException("дата релиза — не раньше 28 декабря 1895 года");
+        }
+    }
+
 
 }

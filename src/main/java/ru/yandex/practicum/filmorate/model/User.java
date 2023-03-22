@@ -2,12 +2,8 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 import ru.yandex.practicum.filmorate.message.ExceptionMessage;
-
 import javax.validation.constraints.*;
-
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -25,5 +21,4 @@ public class User {
     private String name;
     @PastOrPresent(message = ExceptionMessage.INCORRECT_BIRTHDAY)
     private LocalDate birthday;
-    private Set<Integer> usersFriends = new HashSet<>();
 }
