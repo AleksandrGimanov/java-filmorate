@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.user.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,11 +20,11 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
+
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    MapperUser mapperUser;
+    private final MapperUser mapperUser;
 
     @Autowired
     public UserDbStorage(JdbcTemplate jdbcTemplate, MapperUser mapperUser) {
@@ -109,8 +108,12 @@ public class UserDbStorage implements UserStorage {
         getUserById(secondId);
         final String sqlQuery = "INSERT INTO friends (user_id, friend_id) " +
                 "VALUES (?, ?)";
-        jdbcTemplate.update(sqlQuery, firstId, secondId);
-        log.info("Пользователь {} подписался на {}", firstId, secondId);
+        String checkDuplicate = "SELECT * FROM friends WHERE user_id = ? AND friend_id = ?";
+        SqlRowSet checkRows = jdbcTemplate.queryForRowSet(checkDuplicate, firstId,secondId);
+        if (!checkRows.next()) {
+            jdbcTemplate.update(sqlQuery, firstId, secondId);
+            log.info("Пользователь {} подписался на {}", firstId, secondId);
+    }
     }
 
     @Override

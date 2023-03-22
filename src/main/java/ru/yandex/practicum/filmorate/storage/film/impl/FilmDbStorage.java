@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film.impl;
 
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,14 +21,14 @@ import java.util.*;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    MapperFilm mapperFilm;
-    GenreDbStorage genreDbStorage;
+    private final MapperFilm mapperFilm;
+    private final GenreDbStorage genreDbStorage;
+
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, MapperFilm mapperFilm,GenreDbStorage genreDbStorage) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, MapperFilm mapperFilm, GenreDbStorage genreDbStorage) {
         this.jdbcTemplate = jdbcTemplate;
         this.mapperFilm = mapperFilm;
         this.genreDbStorage = genreDbStorage;
@@ -54,11 +54,14 @@ public class FilmDbStorage implements FilmStorage {
             stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
             stmt.setLong(4, film.getDuration());
             stmt.setInt(5, film.getMpa().getId());
+
             return stmt;
         }, generatedId);
+
         film.setId(Objects.requireNonNull(generatedId.getKey()).intValue());
-        final String genresSqlQuery = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
+
         if (film.getGenres() != null) {
+            final String genresSqlQuery = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
             for (Genre g : film.getGenres()) {
                 jdbcTemplate.update(genresSqlQuery, film.getId(), g.getId());
             }
@@ -155,16 +158,16 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sqlQuery, mapperFilm, count);
     }
 
-        private void validate ( int filmId, int userId){
-            final String checkFilmQuery = "SELECT * FROM films WHERE id = ?";
-            final String checkUserQuery = "SELECT * FROM users WHERE id = ?";
+    private void validate(int filmId, int userId) {
+        final String checkFilmQuery = "SELECT * FROM films WHERE id = ?";
+        final String checkUserQuery = "SELECT * FROM users WHERE id = ?";
 
-            SqlRowSet filmRows = jdbcTemplate.queryForRowSet(checkFilmQuery, filmId);
-            SqlRowSet userRows = jdbcTemplate.queryForRowSet(checkUserQuery, userId);
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(checkFilmQuery, filmId);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(checkUserQuery, userId);
 
-            if (!filmRows.next() || !userRows.next()) {
-                log.warn("Фильм {} и(или) пользователь {} не найден.", filmId, userId);
-                throw new ErrorException("Фильм или пользователь не найдены");
-            }
+        if (!filmRows.next() || !userRows.next()) {
+            log.warn("Фильм {} и(или) пользователь {} не найден.", filmId, userId);
+            throw new ErrorException("Фильм или пользователь не найдены");
         }
     }
+}

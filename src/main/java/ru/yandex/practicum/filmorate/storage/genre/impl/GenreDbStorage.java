@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.genre.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,11 +17,10 @@ import java.util.List;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
 public class GenreDbStorage implements GenreStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    MapperGenre mapperGenre;
+    private final MapperGenre mapperGenre;
 
     @Autowired
     public GenreDbStorage(JdbcTemplate jdbcTemplate, MapperGenre mapperGenre) {
